@@ -7,7 +7,7 @@
                       <h4>Login</h4>
                  </div>
                  <div class="card-body">
-                     <form>
+                     <form @submit.prevent="regUser">
                           <div class="form-group">
                               <label for="name">Name</label>
                               <input 
@@ -56,7 +56,7 @@
                               <label for="conf_pass">Confirm Password</label>
                               <input 
                               id="conf_pass"
-                              type="conf_pass"
+                              type="password"
                               placeholder="Confirm Password"
                               name="conf_pass"
                               v-model="conf_pass"
@@ -74,6 +74,7 @@
 </template>
 
 <script>
+    import { mapActions } from 'vuex'
     export default {
         name:"register",
         data(){
@@ -84,11 +85,33 @@
                 password:'',
                 conf_pass:'',
             }
+        },
+        methods:{
+            ...mapActions(['registerUser']),
+            regUser(){
+                let user = {
+                    name:this.name,
+                    username: this.username,
+                    email: this.email,
+                    password: this.password,
+                    confirm_password: this.conf_pass,
+                }
+                this.registerUser(user).then( res => {
+                    if(res.data.success){
+                        this.$router.push("login");
+                        console.log(res);
+                    }
+                }).catch(err => {
+                    console.log(err);
+                })
+            }
+
         }        
     }
 </script>
 
 <style>
+
 .card{
     width: 60%;
     border-radius: 0;

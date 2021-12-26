@@ -1,13 +1,12 @@
 <template>
     <div>
-         <h1>Login</h1>
          <div class="row">
              <div class="card mx-auto">
                  <div class="card-header text-white bg-primary">
                       <h4>Login</h4>
                  </div>
                  <div class="card-body">
-                     <form>
+                     <form @submit.prevent="loginUser">
                           <div class="form-group">
                               <label for="username">Username</label>
                               <input 
@@ -41,12 +40,31 @@
 </template>
 
 <script>
+    import { mapActions } from "vuex"
+
     export default {
         name:'Login',
         data(){
             return{
-                username:'',
-                password:''
+                username:"",
+                password:""
+            }
+        },
+        methods: {
+            ...mapActions(["login"]),
+            loginUser(){  
+                let user = {
+                    username: this.username,
+                    password:this.password
+                }
+                this.login(user).then( res => {
+                    if(res.data.success){
+                        this.$router.push('/profile');
+                    }
+                }).catch(err => {
+                    console.log(err)
+                })
+
             }
         }
     }

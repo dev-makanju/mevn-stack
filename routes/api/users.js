@@ -72,7 +72,7 @@ router.post('/register' , (req , res) => {
  * @access Public
  */
 
-router.post('/Login', (req , res) => {
+router.post('/login', (req , res) => {
     User.findOne({username: req.body.username}).then( user => {
         if(!user){
             return res.status(404).json({
@@ -93,6 +93,7 @@ router.post('/Login', (req , res) => {
                 jwt.sign(payload , key , { expiresIn: 604800} , (err , token) => {
                    res.status(200).json({
                        success: true,
+                       user:user,
                        token:`Bearer ${token}`,
                        msg:"Hurray , you are now logged in",
                    }); 
