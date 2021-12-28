@@ -7,13 +7,13 @@ const state = {
      user(){
 
      },
-     status:"",
+      status:"",
 }
 
 const getters = {
-     isLoggedIn: (state) => !!state.token,
-     authState: (state) => state.status,
-     user: (state) => state.user,
+    isLoggedIn: (state) => !!state.token,
+    authState: (state) => state.status,
+    user: (state) => state.user,
 }
 
 const actions = {
@@ -32,6 +32,7 @@ const actions = {
       }
       return res;
   },
+  
   //register users
   async registerUser({commit} , user){
     commit('register_request')
@@ -41,14 +42,24 @@ const actions = {
      }
      return res;
   },
+
+  //get the user profiles
+  async getProfile({commit}){
+      commit('profile_request');
+      let res = await EventServices.getUserProfile();
+      commit('user_profile' , res.data.user)
+      return res;
+   },
+
   //log out user
   async logout({commit}){
     await localStorage.removeItem('token');
     commit('logout');
     delete axios.defaults.headers.common['Authorization'];
     router.push('/login');
+    location.reload();
     return
-  }
+  },
 }; 
 
 const mutations = {
@@ -68,8 +79,18 @@ const mutations = {
      },
      register_success(state){
         state.status = 'success' 
+     },
+     logout(state){
+        state.status = "",
+        state.token = "",
+        state.user = ""
+     },
+     profile_request(state){
+        state.status = 'loading'
+     },
+     user_profile(state , user){
+        state.user = user
      }
-
 }
 
 export default {
